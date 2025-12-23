@@ -2,6 +2,7 @@ import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import Header from "@/app/(tabs)/components/header";
+import CustomTabNavigator from "./customTabNavigator";
 
 export default function AllBlogs() {
   return (
@@ -15,6 +16,7 @@ export default function AllBlogs() {
         </Text>
       </View>
     
+    <CustomTabNavigator/>
     </View>
   );
 }
