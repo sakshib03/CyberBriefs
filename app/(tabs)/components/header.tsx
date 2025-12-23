@@ -1,0 +1,270 @@
+import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
+import { router, usePathname } from "expo-router";
+
+export default function Header() {
+  const [openMenu, setOpenMenu] = useState(false);
+  const pathname = usePathname(); // Get current path
+
+  // Function to determine active item based on current route
+  const getActiveItem = () => {
+    if (pathname === "/(tabs)") return "home";
+    if (pathname.includes("/recentNews")) return "recentNews";
+    if (pathname.includes("/channels")) return "channels";
+    if (pathname.includes("/darkWebNews")) return "darkWebNews";
+    if (pathname.includes("/allBlogs")) return "allBlogs";
+    
+    return "home";
+  };
+
+  const activeItem = getActiveItem();
+
+  return (
+    <View style={styles.container}>
+      {/* HEADER */}
+      <View style={styles.header}>
+        <View style={{ padding: 8 }}>
+          <TouchableOpacity onPress={() => setOpenMenu(!openMenu)}>
+            <Feather name="menu" size={26} color="#242424" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.subHeader}>
+          <Image
+            source={require("../../../assets/images/logo2.png")}
+            style={styles.logo}
+          />
+        </View>
+      </View>
+
+      {/* MENU */}
+      {openMenu && (
+        <View style={styles.menuContainer}>
+          <TouchableOpacity
+            style={styles.closeIcon}
+            onPress={() => setOpenMenu(false)}
+          >
+            <Feather name="x" size={22} color="#f93232ff" />
+          </TouchableOpacity>
+
+          {/* HOME */}
+          <TouchableOpacity
+            style={[
+              styles.menuItem,
+              activeItem === "home" && styles.activeMenuItem,
+            ]}
+            onPress={() => {
+              router.push("/(tabs)");
+              setOpenMenu(false);
+            }}
+          >
+            <Feather
+              name="home"
+              size={20}
+              color={activeItem === "home" ? "#f93232ff" : "#242424"}
+            />
+            <Text
+              style={[
+                styles.menuText,
+                activeItem === "home" && styles.activeMenuText,
+              ]}
+            >
+              Home
+            </Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={[
+              styles.menuItem,
+              activeItem === "recentNews" && styles.activeMenuItem,
+            ]}
+            onPress={() => {
+              router.push("/(tabs)/components/recentNews");
+              setOpenMenu(false);
+            }}
+          >
+            <Feather
+              name="tv"
+              size={20}
+              color={activeItem === "recentNews" ? "#f93232ff" : "#242424"}
+            />
+            <Text
+              style={[
+                styles.menuText,
+                activeItem === "recentNews" && styles.activeMenuText,
+              ]}
+            >
+              Recent
+            </Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
+
+          {/* CHANNELS */}
+          <TouchableOpacity
+            style={[
+              styles.menuItem,
+              activeItem === "channels" && styles.activeMenuItem,
+            ]}
+            onPress={() => {
+              router.push("/(tabs)/components/channels");
+              setOpenMenu(false);
+            }}
+          >
+            <Feather
+              name="tv"
+              size={20}
+              color={activeItem === "channels" ? "#f93232ff" : "#242424"}
+            />
+            <Text
+              style={[
+                styles.menuText,
+                activeItem === "channels" && styles.activeMenuText,
+              ]}
+            >
+              Channels
+            </Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
+
+          {/* DARKWEB NEWS */}
+          <TouchableOpacity
+            style={[
+              styles.menuItem,
+              activeItem === "darkWebNews" && styles.activeMenuItem,
+            ]}
+            onPress={() => {
+              router.push("/(tabs)/components/darkWebNews");
+              setOpenMenu(false);
+            }}
+          >
+            <Feather
+              name="shield"
+              size={20}
+              color={activeItem === "darkWebNews" ? "#f93232ff" : "#242424"}
+            />
+            <Text
+              style={[
+                styles.menuText,
+                activeItem === "darkWebNews" && styles.activeMenuText,
+              ]}
+            >
+              Darkweb News
+            </Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
+
+          {/* BLOGS */}
+          <TouchableOpacity
+            style={[
+              styles.menuItem,
+              activeItem === "allBlogs" && styles.activeMenuItem,
+            ]}
+            onPress={() => {
+              router.push("/(tabs)/components/allBlogs");
+              setOpenMenu(false);
+            }}
+          >
+            <Feather
+              name="book-open"
+              size={20}
+              color={activeItem === "allBlogs" ? "#f93232ff" : "#242424"}
+            />
+            <Text
+              style={[
+                styles.menuText,
+                activeItem === "allBlogs" && styles.activeMenuText,
+              ]}
+            >
+              Dr. Vikram Sethi Blogs
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    backgroundColor: "#070707ff",
+    position: "relative",
+  },
+
+  header: {
+    top: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: "#ffffff",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    zIndex: 5,
+  },
+
+  subHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  logo: {
+    width: 150,
+    height: 60,
+    resizeMode: "contain",
+  },
+
+  menuContainer: {
+    position: "absolute",
+    top: 40,
+    paddingTop: 100,
+    width: "100%",
+    height: 1000,
+    backgroundColor: "#ffffff",
+    borderRadius: 4,
+    paddingVertical: 10,
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    zIndex: 10,
+  },
+
+  closeIcon: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    padding: 4,
+  },
+
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+
+  menuText: {
+    marginLeft: 12,
+    fontSize: 15,
+    color: "#242424",
+    fontWeight: "500",
+  },
+
+  activeMenuText: {
+    color: "#f93232ff",
+    fontWeight: "600",
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: "#eeeeee",
+    marginHorizontal: 12,
+  },
+});
