@@ -8,106 +8,68 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import Header from "@/app/(tabs)/components/header";
 import CustomTabNavigator from "./customTabNavigator";
 import { router } from "expo-router";
 import { API_BASE } from "../utils/config";
+import { Feather } from "@expo/vector-icons";
 
-export default function AllBlogs() {
+export default function AllArticles() {
+  const [newsData, setNewsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [blogsPerPage] = useState(3);
+  const [articlesPerPage] = useState(3);
 
-  const getDaysAgo = (publishedTime) => {
-    const publishedDate = new Date(publishedTime);
-    const currentDate = new Date();
-    const timeDiff = currentDate.getTime() - publishedDate.getTime();
-    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-    const monthsDiff = Math.floor(daysDiff / 30);
-    const yearsDiff = Math.floor(daysDiff / 365);
-
-    if (yearsDiff > 0) {
-      return `${yearsDiff} ${yearsDiff === 1 ? "year" : "years"} ago`;
-    } else if (monthsDiff > 0) {
-      return `${monthsDiff} ${monthsDiff === 1 ? "month" : "months"} ago`;
-    } else if (daysDiff === 0) {
-      return "Today";
-    } else if (daysDiff === 1) {
-      return "Yesterday";
-    } else {
-      return `${daysDiff} days ago`;
-    }
-  };
-
-  const getReadTime = (body) => {
-    const wordsPerMinute = 200;
-    const wordCount = body.split(/\s+/).length;
-    const readTime = Math.ceil(wordCount / wordsPerMinute);
-    return `${readTime} min read`;
-  };
-
-  const fetchBlogs = async () => {
+  const fetchAllArticles = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`${API_BASE}/news/blogs/vikram`);
+      const response = await fetch(`${API_BASE}/news/cyber/recent`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
       const data = await response.json();
-      
-      const mappedBlogs = data.map((item) => ({
-        id: item.id,
-        title: item.headline.replace(/<[^>]+>/g, ""),
-        summary: item.body.replace(/<[^>]+>/g, "").substring(0, 150) + "...",
-        fullBody: item.body,
-        publishedTime: item.published_time,
-        imagePath: item.image_path,
-        author: item.author,
-        timeAgo: getDaysAgo(item.published_time),
-        readTime: getReadTime(item.body),
-      }));
-      
-      setBlogs(mappedBlogs);
+      setNewsData(data);
     } catch (err) {
-      console.error("Error fetching blogs:", err);
-      setError(err.message || "Failed to load blogs");
+      console.error("Error fetching articles:", err);
+      setError(err instanceof Error ? err.message : "Failed to load articles");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBlogs();
+    fetchAllArticles();
   }, []);
 
-  const filteredBlogs = blogs.filter(
+  const filteredNews = newsData.filter(
     (item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.headline.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.fullBody.toLowerCase().includes(searchQuery.toLowerCase())
+      item.channel.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const indexOfLastBlog = currentPage * blogsPerPage;
-  const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
-  const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
-  const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage);
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+  const currentArticles = filteredNews.slice(indexOfFirstArticle, indexOfLastArticle);
+  const totalPages = Math.ceil(filteredNews.length / articlesPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
+
   const nextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
   
+ 
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -123,8 +85,8 @@ export default function AllBlogs() {
       <View style={styles.container}>
         <Header />
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#f93232" />
-          <Text style={styles.loadingText}>Loading Blogs...</Text>
+          <ActivityIndicator size="large" color="#23467eff" />
+          <Text style={styles.loadingText}>Loading Articles...</Text>
         </View>
         <CustomTabNavigator />
       </View>
@@ -136,9 +98,9 @@ export default function AllBlogs() {
       <View style={styles.container}>
         <Header />
         <View style={styles.errorContainer}>
-          <Feather name="alert-circle" size={50} color="#f93232" />
+          <Feather name="wifi-off" size={50} color="#f93232ff" />
           <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={fetchBlogs}>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchAllArticles}>
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
         </View>
@@ -150,117 +112,94 @@ export default function AllBlogs() {
   return (
     <View style={styles.container}>
       <Header />
+
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Text style={styles.title}>Dr. Vikram Sethi Blogs</Text>
         <TextInput
-          placeholder="Search blogs by title or content..."
-          placeholderTextColor={"#595858ff"}
+          style={styles.searchInput}
+          placeholder="Search articles, channels, topics..."
+          placeholderTextColor="#94a3b8"
           value={searchQuery}
           onChangeText={setSearchQuery}
-          style={styles.searchInput}
+          returnKeyType="search"
+          clearButtonMode="while-editing"
         />
       </View>
 
       <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-      
+        <Text style={styles.title}>All Articles</Text>
         
-        {currentBlogs.length > 0 ? (
+        {currentArticles.length > 0 ? (
           <>
-            {currentBlogs.map((item) => (
-              <View key={item.id} style={styles.newsCard}>
-                <Image
-                  source={{ uri: `${API_BASE}${item.imagePath}` }}
-                  style={styles.newsImage}
-                  resizeMode="cover"
-                  defaultSource={require("@/assets/images/img1.jpeg")}
-                  onError={(e) => {
-                    console.log("Image load error:", e.nativeEvent.error);
-                  }}
-                />
+            {currentArticles.map((item) => (
+              <TouchableOpacity 
+                key={item.id} 
+                style={styles.newsCard}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(tabs)/components/newsDetails",
+                    params: {
+                      newsId: item.id.toString(),
+                      headline: item.headline,
+                      summary: item.summary,
+                      image: item.image,
+                      publishedTime: item.published_time,
+                      channel: item.channel
+                    },
+                  })
+                }
+              >
+                {item.image && (
+                  <Image
+                    source={{ uri: `${API_BASE}/${item.image}` }}
+                    style={styles.newsImage}
+                    resizeMode="cover"
+                    onError={() => console.log(`Error loading image: ${item.image}`)}
+                  />
+                )}
                 
-                <TouchableOpacity
-                  onPress={() =>
-                    router.push({
-                      pathname: "/(tabs)/components/blogDetails",
-                      params: {
-                        blogId: item.id.toString(),
-                        title: item.title,
-                        summary: item.summary,
-                        body: item.fullBody,
-                        author: item.author,
-                        publishedTime: item.publishedTime,
-                        readTime: item.readTime,
-                        imagePath: item.imagePath,
-                      },
-                    })
-                  }
-                >
-                  <Text style={styles.newsTitle}>{item.title}</Text>
-                </TouchableOpacity>
+                {/* Channel Badge */}
+                <View style={styles.channelBadge}>
+                  <Text style={styles.channelText}>{item.channel}</Text>
+                </View>
 
-                <View style={styles.metaInfo}>
+                <Text style={styles.newsTitle}>{item.headline}</Text>
+
+                <View style={styles.metaContainer}>
                   <View style={styles.metaItem}>
-                    <Feather name="calendar" size={14} color="#64748b" />
+                    <Feather name="clock" size={14} color="#64748b" />
                     <Text style={styles.metaText}>
-                      {new Date(item.publishedTime).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
+                      {new Date(item.published_time).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric',
+                        year: 'numeric'
                       })}
                     </Text>
                   </View>
                   <View style={styles.metaItem}>
-                    <Feather name="clock" size={14} color="#64748b" />
-                    <Text style={styles.metaText}>{item.readTime}</Text>
+                    <Feather name="calendar" size={14} color="#64748b" />
+                    <Text style={styles.metaText}>
+                      {(() => {
+                        const publishedDate = new Date(item.published_time);
+                        const currentDate = new Date();
+                        const timeDiff = currentDate.getTime() - publishedDate.getTime();
+                        const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        
+                        if (daysDiff === 0) return "Today";
+                        if (daysDiff === 1) return "Yesterday";
+                        return `${daysDiff} days ago`;
+                      })()}
+                    </Text>
                   </View>
                 </View>
 
                 <Text style={styles.newsSummary} numberOfLines={3}>
                   {item.summary}
                 </Text>
-
-                <View style={styles.authorSection}>
-                  <View style={{ flexDirection: "row", gap: 10 }}>
-                    <View>
-                      <Image
-                        source={require("@/assets/images/photo.png")}
-                        style={{ width: 50, height: 50, borderRadius: 25 }}
-                      />
-                    </View>
-                    <View style={{ marginTop: 4 }}>
-                      <Text style={styles.authorName}>{item.author}</Text>
-                      <Text style={styles.authorTime}>{item.timeAgo}</Text>
-                    </View>
-                  </View>
-
-                  <View>
-                    <TouchableOpacity
-                      style={styles.readMoreButton}
-                      onPress={() =>
-                        router.push({
-                          pathname: "/(tabs)/components/blogDetails",
-                          params: {
-                            blogId: item.id.toString(),
-                            title: item.title,
-                            summary: item.summary,
-                            body: item.fullBody,
-                            author: item.author,
-                            publishedTime: item.publishedTime,
-                            readTime: item.readTime,
-                            imagePath: item.imagePath,
-                          },
-                        })
-                      }
-                    >
-                      <Text style={styles.readMoreText}>Read More</Text>
-                      <Feather name="external-link" size={22} color={"#fc2f2fff"} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
+              </TouchableOpacity>
             ))}
 
-            {/* Pagination Controls - Only show if more than 3 blogs */}
+            {/* Pagination Controls */}
             {totalPages > 1 && (
               <View style={styles.paginationContainer}>
                 {/* Previous Button */}
@@ -279,14 +218,14 @@ export default function AllBlogs() {
                 <View style={styles.pageNumbers}>
                   {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
                     let pageNumber;
-                    if (totalPages <= 3) {
+                    if (totalPages <= 5) {
                       pageNumber = i + 1;
-                    } else if (currentPage <= 2) {
+                    } else if (currentPage <= 3) {
                       pageNumber = i + 1;
-                    } else if (currentPage >= totalPages - 1) {
-                      pageNumber = totalPages - 2 + i;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNumber = totalPages - 4 + i;
                     } else {
-                      pageNumber = currentPage - 1 + i;
+                      pageNumber = currentPage - 2 + i;
                     }
 
                     if (pageNumber > totalPages) return null;
@@ -330,9 +269,7 @@ export default function AllBlogs() {
           <View style={styles.emptyContainer}>
             <Feather name="search" size={60} color="#ccc" />
             <Text style={styles.emptyText}>
-              {searchQuery
-                ? "No blogs found matching your search"
-                : "No blogs available"}
+              {searchQuery ? "No articles found matching your search" : "No articles available"}
             </Text>
           </View>
         )}
@@ -349,106 +286,109 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8fafc",
   },
   searchContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     backgroundColor: "#fff",
-    marginTop: 50,
+    marginTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: "#e2e8f0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 12,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 8,
   },
   searchInput: {
     borderWidth: 2,
     borderColor: "#e2e8f0",
     borderRadius: 16,
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    fontSize: 17,
+    paddingVertical: 14,
+    fontSize: 16,
     backgroundColor: "#fff",
     color: "#334155",
     fontWeight: "500",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-    marginTop: 8,
-  },
-  resultsContainer: {
-    backgroundColor: "#f1f5f9",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-  },
-  resultsText: {
-    fontSize: 15,
-    color: "#475569",
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  title: {
-    color: "#f93232",
-    fontWeight: "800",
-    fontSize: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e2e8f0",
-    letterSpacing: -0.5,
-    textShadowColor: "rgba(249, 50, 50, 0.15)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   contentContainer: {
     flex: 1,
-    marginTop: 10,
+    marginTop: 0,
     paddingBottom: 80,
     paddingHorizontal: 20,
   },
+  title: {
+    color: "#091b38",
+    fontWeight: "800",
+    fontSize: 28,
+    paddingVertical: 20,
+    textAlign: "center",
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e2e8f0",
+    marginBottom: 5,
+    letterSpacing: -0.5,
+    textShadowColor: "rgba(9, 27, 56, 0.1)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
   newsCard: {
-    marginBottom: 28,
+    marginBottom: 24,
     backgroundColor: "#fff",
     borderRadius: 20,
     overflow: "hidden",
     padding: 20,
+    paddingVertical: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 16,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 10,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.9)",
+    borderColor: "rgba(255, 255, 255, 0.8)",
   },
   newsImage: {
     width: "100%",
-    height: 220,
-    borderRadius: 18,
+    height: 200,
+    borderRadius: 14,
+    backgroundColor: "#f1f5f9",
     marginBottom: 20,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "#e2e8f0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    backgroundColor: "#f1f5f9",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  channelBadge: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "#f93232",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    zIndex: 1,
+  },
+  channelText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   newsTitle: {
     fontWeight: "800",
-    fontSize: 24,
+    fontSize: 22,
+    marginTop: 0,
     color: "#0f172a",
-    lineHeight: 34,
-    letterSpacing: -0.4,
+    lineHeight: 28,
+    letterSpacing: -0.3,
     marginBottom: 12,
   },
-  metaInfo: {
+  metaContainer: {
     flexDirection: "row",
     gap: 16,
     marginBottom: 16,
@@ -470,40 +410,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   newsSummary: {
-    fontSize: 17,
+    fontSize: 16,
     color: "#475569",
     marginTop: 8,
-    lineHeight: 26,
+    lineHeight: 24,
     fontWeight: "500",
     letterSpacing: -0.1,
-    marginBottom: 8,
-  },
-  authorSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  authorName: {
-    fontSize: 14,
-    color: "#030303ff",
-    fontWeight: "500",
-  },
-  authorTime: {
-    color: "#434242ff",
-    fontSize: 13,
-    marginTop: 2,
-  },
-  readMoreButton: {
-    flexDirection: "row",
-    padding: 6,
-    gap: 6,
-    alignItems: "center",
-  },
-  readMoreText: {
-    color: "#fc2f2fff",
-    fontSize: 16,
-    fontWeight: "600",
   },
   paginationContainer: {
     flexDirection: "row",

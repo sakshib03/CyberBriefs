@@ -5,14 +5,13 @@ import { router, usePathname } from "expo-router";
 
 export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
-  const pathname = usePathname(); // Get current path
+  const pathname = usePathname();
 
-  // Function to determine active item based on current route
   const getActiveItem = () => {
     if (pathname === "/(tabs)") return "home";
     if (pathname.includes("/recentNews")) return "recentNews";
     if (pathname.includes("/channels")) return "channels";
-    if (pathname.includes("/darkWebNews")) return "darkWebNews";
+    if (pathname.includes("/y2aiNewsletter")) return "y2aiNewsletter";
     if (pathname.includes("/allBlogs")) return "allBlogs";
     
     return "home";
@@ -24,11 +23,11 @@ export default function Header() {
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        <View style={{ padding: 8 }}>
+        {/* <View style={{ padding: 8 }}>
           <TouchableOpacity onPress={() => setOpenMenu(!openMenu)}>
             <Feather name="menu" size={26} color="#242424" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style={styles.subHeader}>
           <Image
             source={require("../../../assets/images/logo2.png")}
@@ -44,7 +43,7 @@ export default function Header() {
             style={styles.closeIcon}
             onPress={() => setOpenMenu(false)}
           >
-            <Feather name="x" size={22} color="#f93232ff" />
+            <Feather name="x" size={28} color="#f93232ff" />
           </TouchableOpacity>
 
           {/* HOME */}
@@ -74,7 +73,7 @@ export default function Header() {
           </TouchableOpacity>
           <View style={styles.divider} />
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[
               styles.menuItem,
               activeItem === "recentNews" && styles.activeMenuItem,
@@ -97,7 +96,7 @@ export default function Header() {
             >
               Recent
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={styles.divider} />
 
           {/* CHANNELS */}
@@ -127,29 +126,29 @@ export default function Header() {
           </TouchableOpacity>
           <View style={styles.divider} />
 
-          {/* DARKWEB NEWS */}
+       
           <TouchableOpacity
             style={[
               styles.menuItem,
-              activeItem === "darkWebNews" && styles.activeMenuItem,
+              activeItem === "y2aiNewsletter" && styles.activeMenuItem,
             ]}
             onPress={() => {
-              router.push("/(tabs)/components/darkWebNews");
+              router.push("/(tabs)/components/y2aiNewsletter");
               setOpenMenu(false);
             }}
           >
             <Feather
               name="shield"
               size={20}
-              color={activeItem === "darkWebNews" ? "#f93232ff" : "#242424"}
+              color={activeItem === "y2aiNewsletter" ? "#f93232ff" : "#242424"}
             />
             <Text
               style={[
                 styles.menuText,
-                activeItem === "darkWebNews" && styles.activeMenuText,
+                activeItem === "y2aiNewsletter" && styles.activeMenuText,
               ]}
             >
-              Darkweb News
+              Y2AI Newsletter
             </Text>
           </TouchableOpacity>
           <View style={styles.divider} />
@@ -190,6 +189,8 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#070707ff",
     position: "relative",
+    zIndex:1000,
+
   },
 
   header: {
@@ -223,11 +224,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 40,
     paddingTop: 100,
+    paddingLeft:30,
     width: "100%",
     height: 1000,
     backgroundColor: "#ffffff",
     borderRadius: 4,
-    paddingVertical: 10,
     elevation: 6,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
 
   closeIcon: {
     position: "absolute",
-    top: 20,
+    top: 30,
     right: 20,
     padding: 4,
   },
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
 
   menuText: {
     marginLeft: 12,
-    fontSize: 15,
+    fontSize: 20,
     color: "#242424",
     fontWeight: "500",
   },

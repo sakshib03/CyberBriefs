@@ -24,6 +24,12 @@ export default function CustomTabNavigator() {
       route: "/(tabs)/components/allBlogs",
       active: pathname.includes("/allBlogs"),
     },
+    {
+      name: "Y2AI Newsletter",
+      icon: "tv",
+      route: "/(tabs)/components/y2aiNewsletter",
+      active: pathname.includes("/y2aiNewsletter"),
+    },
   ];
 
   return (
@@ -56,19 +62,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
-    right: 0,
+    right: 20,
     flexDirection: "row",
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#eee",
-    height: 70,
+    height: 80,
     paddingBottom: 10,
   },
   tabItem: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 5,
   },
   activeTab: {
     borderTopWidth: 2,

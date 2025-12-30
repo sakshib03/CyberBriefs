@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-  ]
+, "app/(tabs)/components/channelNews.tsx", "app/(tabs)/components/blogDetails.tsx", "app/(tabs)/components/allBlogs.tsx", "app/(tabs)/components/customTabNavigator.tsx", "app/(tabs)/components/channels.tsx", "app/(tabs)/components/y2aiNewsletter.tsx", "app/(tabs)/components/header.tsx", "app/(tabs)/components/newsDetails.tsx", "app/(tabs)/components/recentNews.tsx", "app/(tabs)/utils/config.tsx", "app/(tabs)/_layout.tsx", "app/(tabs)/index.tsx", "app/_layout.tsx"  ]
 }
