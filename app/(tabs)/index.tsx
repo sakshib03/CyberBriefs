@@ -15,11 +15,16 @@ import CustomTabNavigator from "./components/customTabNavigator";
 import { router } from "expo-router";
 import RenderHTML from "react-native-render-html";
 import { API_BASE } from "./utils/config";
+import * as Linking from "expo-linking";
+import Footer from "./components/footer";
 
 export default function HomeScreen() {
+  const [headline, setHeadline]=useState(null);
   const [popularArticles, setPopularArticles] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
   const [loadingBlogs, setLoadingBlogs] = useState(true);
+  const [newsletterPosts, setNewsletterPosts] = useState([]);
+  const [loadingNewsletter, setLoadingNewsletter] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const timeoutRef = useState(null);
 
@@ -71,6 +76,18 @@ export default function HomeScreen() {
 
   const getReadTime = (body) => {
     const wordsPerMinute = 200;
+    const cleanText = body
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&rsquo;/g, "'")
+      .replace(/&mdash;/g, "—")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\s+/g, " ")
+      .trim();
     const wordCount = body.split(/\s+/).length;
     const readTime = Math.ceil(wordCount / wordsPerMinute);
     return `${readTime} min read`;
@@ -97,29 +114,137 @@ export default function HomeScreen() {
     }
   };
 
+  const fetchHeadline=async()=>{
+    try{
+      const response=await fetch(`${API_BASE}/news/cyber/headline`);
+      const data= await response.json();
+
+      setHeadline(data);
+    }catch(error){
+      console.error("Error fetching headline:", error);
+    }
+  };
+
   const fetchBlogs = async () => {
     try {
       setLoadingBlogs(true);
       const response = await fetch(`${API_BASE}/news/blogs/vikram`);
       const data = await response.json();
 
-      const mappedBlogs = data.slice(0, 2).map((item) => ({
-        id: item.id,
-        title: item.headline,
-        summary: item.body.substring(0, 150) + "...", 
-        publishedTime: item.published_time,
-        imagePath: item.image_path,
-        author: item.author,
-        timeAgo: getDaysAgo(item.published_time),
-        readTime: getReadTime(item.body),
-        fullBody: item.body,
-      }));
+      const mappedBlogs = data.map((item) => {
+        const stripHtmlTags = (html) => {
+          if (!html) return "";
+          return html
+            .replace(/<[^>]+>/g, " ")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&rsquo;/g, "'")
+            .replace(/&ldquo;/g, '"')
+            .replace(/&rdquo;/g, '"')
+            .replace(/&mdash;/g, "—")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/\s+/g, " ")
+            .replace(/<br\s*\/?>/gi, "<br/>")
+            .replace(/\r\n/g, "\n");
+        };
+        const cleanTitle = stripHtmlTags(item.headline);
+        const cleanBody = stripHtmlTags(item.body);
+
+        const summary =
+          cleanBody.length > 150
+            ? cleanBody.substring(0, 150) + "..."
+            : cleanBody;
+
+        return {
+          id: item.id,
+          title: cleanTitle,
+          summary: summary,
+          fullBody: item.body,
+          publishedTime: item.published_time,
+          imagePath: item.image_path,
+          author: item.author,
+          timeAgo: getDaysAgo(item.published_time),
+          readTime: getReadTime(item.body),
+        };
+      });
 
       setBlogPosts(mappedBlogs);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     } finally {
       setLoadingBlogs(false);
+    }
+  };
+
+  const fetchNewsLetter = async () => {
+    try {
+      setLoadingNewsletter(true);
+      const response = await fetch(`${API_BASE}/newsletter/y2ai`);
+      const data = await response.json();
+
+      const mappedNewsletter = data.map((item) => {
+        const stripHtmlTags = (html) => {
+          if (!html) return "";
+          return html
+            .replace(/<[^>]+>/g, " ")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&rsquo;/g, "'")
+            .replace(/&ldquo;/g, '"')
+            .replace(/&rdquo;/g, '"')
+            .replace(/&mdash;/g, "—")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/\s+/g, " ")
+            .replace(/<br\s*\/?>/gi, " ")
+            .replace(/\r\n/g, " ")
+            .trim();
+        };
+
+        const extractSummary = (html) => {
+          if (!html) return "";
+
+          const firstParagraphMatch = html.match(/<p[^>]*>(.*?)<\/p>/);
+          if (firstParagraphMatch && firstParagraphMatch[1]) {
+            const cleanText = stripHtmlTags(firstParagraphMatch[1]);
+            if (cleanText.length > 30) {
+              return cleanText.length > 120
+                ? cleanText.substring(0, 120) + "..."
+                : cleanText;
+            }
+          }
+
+          const cleanText = stripHtmlTags(html);
+          return cleanText.length > 120
+            ? cleanText.substring(0, 120) + "..."
+            : cleanText;
+        };
+
+        const cleanTitle = stripHtmlTags(item.headline);
+        const summary = extractSummary(item.body);
+
+        return {
+          id: item.id,
+          title: cleanTitle,
+          summary: summary,
+          fullBody: item.body,
+          publishedTime: item.published_time,
+          imagePath: item.image,
+          timeAgo: getDaysAgo(item.published_time),
+          readTime: getReadTime(item.body),
+        };
+      });
+
+      setNewsletterPosts(mappedNewsletter);
+    } catch (error) {
+      console.error("Error fetching Newsletters:", error);
+    } finally {
+      setLoadingNewsletter(false);
     }
   };
 
@@ -148,8 +273,10 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
+    fetchHeadline();
     fetchPopularArticles();
     fetchBlogs();
+    fetchNewsLetter();
   }, []);
 
   return (
@@ -163,8 +290,7 @@ export default function HomeScreen() {
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <Text style={styles.heroTitle}>
-            Aflac data breach exposes 22 million customers, cybersecurity
-            concerns persist
+            {headline?.headline || "Loading..."}
           </Text>
           <Text style={styles.heroSubtitle}>
             Latest insights from cybersecurity experts
@@ -193,64 +319,20 @@ export default function HomeScreen() {
               />
             ))}
           </View>
-          {/* <View style={styles.featuredContent}>
-              <TouchableOpacity
-                onPress={() => router.push("/(tabs)/components/newsDetails")}
-              >
-                <Text style={styles.featuredTitle}>{item.title}</Text>
-              </TouchableOpacity>
-
-              <View style={styles.metaInfo}>
-                <Feather name="clock" size={14} color="#888" />
-                <Text style={styles.metaText}>
-                  {new Date(item.publishedTime).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </Text>
-              </View>
-
-              <Text style={styles.featuredSummary} numberOfLines={3}>
-                {item.summary}
-              </Text>
-
-              <View style={styles.authorSection}>
-                <View style={styles.authorInfo}>
-                  <View style={styles.authorAvatar}>
-                    <Text style={styles.avatarText}>
-                      {item.author.charAt(0)}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text style={styles.authorName}>{item.author}</Text>
-                    <Text style={styles.authorTime}>{item.timeAgo}</Text>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  style={styles.readMoreButton}
-                  onPress={() => router.push("/(tabs)/components/blogDetails")}
-                >
-                  <Text style={styles.readMoreText}>Read Full</Text>
-                  <Feather name="arrow-right" size={18} color="#fff" />
-                </TouchableOpacity>
-              </View>
-            </View> */}
         </View>
 
         {/* Most Read Articles - Updated to use API data */}
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>
             <View>
-              <Text style={styles.sectionTitle}>Most Read Articles</Text>
+              <Text style={styles.sectionTitle}>Latest Articles</Text>
               <Text style={styles.sectionSubtitle}>
                 Top trending in cybersecurity
               </Text>
             </View>
             <TouchableOpacity
               style={styles.viewAllButton}
-              onPress={() => router.push("/(tabs)/components/allArticles")}
+              onPress={() => router.push("/(tabs)/components/Articles/allArticles")}
             >
               <Text style={styles.viewAllText}>View All</Text>
               <Feather name="chevron-right" size={18} color="#FF3B30" />
@@ -268,7 +350,7 @@ export default function HomeScreen() {
                 style={styles.articleCard}
                 onPress={() =>
                   router.push({
-                    pathname: "/(tabs)/components/newsDetails",
+                    pathname: "/(tabs)/components/Channels/newsDetails",
                     params: {
                       newsId: item.id.toString(),
                       headline: item.headline,
@@ -308,7 +390,7 @@ export default function HomeScreen() {
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>
             <View>
-              <Text style={styles.sectionTitle}>Latest Blogs</Text>
+              <Text style={styles.sectionTitle}>Dr. Vikram Sethi Blogs</Text>
               <Text style={styles.sectionSubtitle}>
                 Insights from security researcher
               </Text>
@@ -322,7 +404,7 @@ export default function HomeScreen() {
             </View>
           ) : blogPosts.length > 0 ? (
             <>
-              {blogPosts.map((item) => (
+              {blogPosts.slice(0,2).map((item) => (
                 <View key={item.id} style={styles.blogCard}>
                   <Image
                     source={{ uri: `${API_BASE}${item.imagePath}` }}
@@ -334,7 +416,7 @@ export default function HomeScreen() {
                     <TouchableOpacity
                       onPress={() =>
                         router.push({
-                          pathname: "/(tabs)/components/blogDetails",
+                          pathname: "/(tabs)/components/Blogs/blogDetails",
                           params: {
                             blogId: item.id.toString(),
                             title: item.title,
@@ -354,9 +436,9 @@ export default function HomeScreen() {
                     <View style={styles.blogMeta}>
                       <View style={styles.metaItem}>
                         <Image
-                        source={require("@/assets/images/photo.png")}
-                        style={{ width: 40, height: 40, borderRadius: 25 }}
-                      />
+                          source={require("@/assets/images/photo.png")}
+                          style={{ width: 40, height: 40, borderRadius: 25 }}
+                        />
                         <Text style={styles.metaTextSmall}>{item.author}</Text>
                       </View>
                       <View style={styles.metaItem}>
@@ -375,7 +457,7 @@ export default function HomeScreen() {
                       style={styles.blogReadButton}
                       onPress={() =>
                         router.push({
-                          pathname: "/(tabs)/components/blogDetails",
+                          pathname: "/(tabs)/components/Blogs/blogDetails",
                           params: {
                             blogId: item.id.toString(),
                             title: item.title,
@@ -402,7 +484,7 @@ export default function HomeScreen() {
 
               <TouchableOpacity
                 style={styles.readMoreBlogsButton}
-                onPress={() => router.push("/(tabs)/components/allBlogs")}
+                onPress={() => router.push("/(tabs)/components/Blogs/allBlogs")}
               >
                 <Text style={styles.readMoreBlogsText}>Explore All Blogs</Text>
                 <Feather name="book-open" size={20} color="#fff" />
@@ -420,60 +502,112 @@ export default function HomeScreen() {
           <View style={styles.sectionHeader}>
             <View>
               <Text style={styles.darkWebTitle}>
-                Latest from Y2AI Newsletter
-              </Text>
-              <Text style={styles.darkWebSubtitle}>
-                Threat intelligence reports
+              Y2AI Newsletter
               </Text>
             </View>
-          </View>
-
-          <TouchableOpacity style={styles.darkWebButton}>
-            <Text style={styles.darkWebButtonText}>All Reports</Text>
-            <Feather name="external-link" size={16} color="#fff" />
-          </TouchableOpacity>
-
-          <View style={styles.darkWebCard}>
-            <View style={styles.darkWebHeader}>
-              <View style={styles.alertBadge}>
-                <Feather name="alert-triangle" size={14} color="#fff" />
-                <Text style={styles.alertText}>ALERT</Text>
-              </View>
-              <Text style={styles.darkWebTime}>Discovered: 10-15-2025</Text>
-            </View>
-
-            <Text style={styles.darkWebMainTitle}>
-              Data Breach Discovered at integliatech.com
-            </Text>
-            <Text style={styles.darkWebSummary}>{darkWebNews[0].summary}</Text>
-
-            <View style={styles.darkWebDetails}>
-              <View style={styles.detailItem}>
-                <Feather name="user" size={14} color="#666" />
-                <Text style={styles.detailText}>BrotherHood Threat Actor</Text>
-              </View>
-              <View style={styles.detailItem}>
-                <Feather name="map-pin" size={14} color="#666" />
-                <Text style={styles.detailText}>Country: India</Text>
-              </View>
-            </View>
-
-            <TouchableOpacity style={styles.reportButton}>
-              <Text style={styles.reportButtonText}>View Full Report</Text>
-              <Feather name="download" size={18} color="#fff" />
+            <TouchableOpacity
+              style={styles.darkWebButton}
+              onPress={() =>
+                router.push("/(tabs)/components/NewsLetter/newsLetter")
+              }
+            >
+              <Text style={styles.darkWebButtonText}>All Newsletters</Text>
+              <Feather name="external-link" size={16} color="#fff" />
             </TouchableOpacity>
           </View>
+
+          {loadingNewsletter ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color="#f93232" />
+              <Text style={styles.loadingText}>Loading newsletters...</Text>
+            </View>
+          ) : newsletterPosts.length > 0 ? (
+            newsletterPosts.slice(0, 1).map(
+              (
+                item 
+              ) => (
+                <View key={item.id} style={styles.darkWebCard}>
+                  <View style={styles.darkWebHeader}>
+                    <View style={styles.alertBadge}>
+                      <Text style={styles.alertText}>Y2AI NEWSLETTER</Text>
+                    </View>
+                    <Text style={styles.darkWebTime}>
+                      Published:{" "}
+                      {new Date(item.publishedTime).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      )}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push({
+                        pathname:
+                          "/(tabs)/components/NewsLetter/newsLetterDetails",
+                        params: {
+                          newsletter_id: item.id.toString(),
+                          title: item.title,
+                          body: item.fullBody,
+                          publishedTime: item.publishedTime,
+                          readTime: item.readTime,
+                          imagePath: item.imagePath,
+                        },
+                      })
+                    }
+                  >
+                    <Text style={styles.darkWebMainTitle}>{item.title}</Text>
+                  </TouchableOpacity>
+
+                  <Text style={styles.darkWebSummary} numberOfLines={3}>
+                    {item.summary}
+                  </Text>
+
+                  <View style={styles.darkWebDetails}>
+                    <View style={styles.detailItem}>
+                      <Feather name="clock" size={14} color="#666" />
+                      <Text style={styles.detailText}>{item.timeAgo}</Text>
+                    </View>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.reportButton}
+                    onPress={() =>
+                      router.push({
+                        pathname:
+                          "/(tabs)/components/NewsLetter/newsLetterDetails",
+                        params: {
+                          newsletter_id: item.id.toString(),
+                          title: item.title,
+                          body: item.fullBody,
+                          publishedTime: item.publishedTime,
+                          readTime: item.readTime,
+                          imagePath: item.imagePath,
+                        },
+                      })
+                    }
+                  >
+                    <Text style={styles.reportButtonText}>
+                      Read Full Newsletter
+                    </Text>
+                    <Feather name="arrow-up-right" size={18} color="#fff" />
+                  </TouchableOpacity>
+                </View>
+              )
+            )
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Feather name="file-text" size={40} color="#ccc" />
+              <Text style={styles.emptyText}>No newsletters available</Text>
+            </View>
+          )}
         </View>
 
-        <View>
-          <Text
-            style={{ color: "#515050ff", marginTop: 20, textAlign: "center" }}
-          >
-            © 2026 cyberbriefs.org
-          </Text>
-        </View>
-        {/* Footer Space */}
-        <View style={styles.footerSpace} />
+       <Footer/>
       </ScrollView>
 
       <CustomTabNavigator />
@@ -488,10 +622,10 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   contentContainer: {
-    marginTop: 50,
+    marginTop: 30,
     paddingBottom: 80,
+    marginHorizontal:10
   },
-
   heroSection: {
     paddingHorizontal: 20,
     paddingVertical: 24,
@@ -500,7 +634,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#e9ecef",
   },
   heroTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
     color: "#091b38",
     marginBottom: 6,
@@ -730,11 +864,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#091b38",
     lineHeight: 24,
-    marginBottom: 12,
+    marginBottom: 14,
   },
   blogMeta: {
     flexDirection: "row",
-    gap: 16,
+    gap: 22,
     marginBottom: 12,
   },
   metaItem: {
@@ -745,19 +879,19 @@ const styles = StyleSheet.create({
   metaTextSmall: {
     fontSize: 16,
     color: "#14122cff",
-    fontWeight:500
+    fontWeight: 500,
   },
   blogSummary: {
     fontSize: 15,
     color: "#444",
     lineHeight: 22,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   blogReadButton: {
-    alignSelf: "flex-start",
+    alignSelf: "flex-end",
     flexDirection: "row",
     gap: 4,
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 0,
   },
   blogReadText: {
@@ -806,7 +940,7 @@ const styles = StyleSheet.create({
   },
 
   darkWebSection: {
-    marginTop: 32,
+    marginTop: 38,
     paddingHorizontal: 20,
   },
   darkWebTitle: {
@@ -839,7 +973,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a2e",
     borderRadius: 16,
     padding: 20,
-    marginTop: 16,
+    marginTop: 10,
   },
   darkWebHeader: {
     flexDirection: "row",
@@ -863,7 +997,7 @@ const styles = StyleSheet.create({
   },
   darkWebTime: {
     fontSize: 12,
-    color: "#a0a0c0",
+    color: "#d0d0e7ff",
   },
   darkWebMainTitle: {
     fontSize: 18,
@@ -905,10 +1039,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "600",
-  },
-
-  footerSpace: {
-    height: 40,
   },
 
   paginationContainer: {

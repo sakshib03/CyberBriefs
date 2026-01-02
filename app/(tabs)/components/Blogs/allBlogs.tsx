@@ -1,19 +1,20 @@
+import Header from "@/app/(tabs)/components/header";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
+  ActivityIndicator,
   Image,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  ActivityIndicator,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
-import Header from "@/app/(tabs)/components/header";
-import CustomTabNavigator from "./customTabNavigator";
-import { router } from "expo-router";
-import { API_BASE } from "../utils/config";
+import { API_BASE } from "../../utils/config";
+import CustomTabNavigator from "../customTabNavigator";
+import Footer from "../footer";
 
 export default function AllBlogs() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,7 +47,20 @@ export default function AllBlogs() {
 
   const getReadTime = (body) => {
     const wordsPerMinute = 200;
-    const wordCount = body.split(/\s+/).length;
+    const cleanText = body
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&rsquo;/g, "'")
+      .replace(/&mdash;/g, "—")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const wordCount = cleanText.split(/\s+/).length;
     const readTime = Math.ceil(wordCount / wordsPerMinute);
     return `${readTime} min read`;
   };
@@ -55,27 +69,55 @@ export default function AllBlogs() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`${API_BASE}/news/blogs/vikram`);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
-      const mappedBlogs = data.map((item) => ({
-        id: item.id,
-        title: item.headline.replace(/<[^>]+>/g, ""),
-        summary: item.body.replace(/<[^>]+>/g, "").substring(0, 150) + "...",
-        fullBody: item.body,
-        publishedTime: item.published_time,
-        imagePath: item.image_path,
-        author: item.author,
-        timeAgo: getDaysAgo(item.published_time),
-        readTime: getReadTime(item.body),
-      }));
-      
+
+      const mappedBlogs = data.map((item) => {
+        const stripHtmlTags = (html) => {
+          if (!html) return "";
+          return html
+            .replace(/<[^>]+>/g, " ")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&rsquo;/g, "'")
+            .replace(/&ldquo;/g, '"')
+            .replace(/&rdquo;/g, '"')
+            .replace(/&mdash;/g, "—")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/\s+/g, " ")
+            .replace(/<br\s*\/?>/gi, "<br/>")
+            .replace(/\r\n/g, "\n");
+        };
+        const cleanTitle = stripHtmlTags(item.headline);
+        const cleanBody = stripHtmlTags(item.body);
+
+        const summary =
+          cleanBody.length > 150
+            ? cleanBody.substring(0, 150) + "..."
+            : cleanBody;
+
+        return {
+          id: item.id,
+          title: cleanTitle,
+          summary: summary,
+          fullBody: item.body,
+          publishedTime: item.published_time,
+          imagePath: item.image_path,
+          author: item.author,
+          timeAgo: getDaysAgo(item.published_time),
+          readTime: getReadTime(item.body),
+        };
+      });
+
       setBlogs(mappedBlogs);
     } catch (err) {
       console.error("Error fetching blogs:", err);
@@ -107,7 +149,7 @@ export default function AllBlogs() {
       setCurrentPage(currentPage + 1);
     }
   };
-  
+
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -117,6 +159,7 @@ export default function AllBlogs() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
 
   if (loading) {
     return (
@@ -161,9 +204,10 @@ export default function AllBlogs() {
         />
       </View>
 
-      <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-      
-        
+      <ScrollView
+        style={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {currentBlogs.length > 0 ? (
           <>
             {currentBlogs.map((item) => (
@@ -177,11 +221,11 @@ export default function AllBlogs() {
                     console.log("Image load error:", e.nativeEvent.error);
                   }}
                 />
-                
+
                 <TouchableOpacity
                   onPress={() =>
                     router.push({
-                      pathname: "/(tabs)/components/blogDetails",
+                      pathname: "/(tabs)/components/Blogs/blogDetails",
                       params: {
                         blogId: item.id.toString(),
                         title: item.title,
@@ -202,11 +246,14 @@ export default function AllBlogs() {
                   <View style={styles.metaItem}>
                     <Feather name="calendar" size={14} color="#64748b" />
                     <Text style={styles.metaText}>
-                      {new Date(item.publishedTime).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {new Date(item.publishedTime).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      )}
                     </Text>
                   </View>
                   <View style={styles.metaItem}>
@@ -238,7 +285,7 @@ export default function AllBlogs() {
                       style={styles.readMoreButton}
                       onPress={() =>
                         router.push({
-                          pathname: "/(tabs)/components/blogDetails",
+                          pathname: "/(tabs)/components/Blogs/blogDetails",
                           params: {
                             blogId: item.id.toString(),
                             title: item.title,
@@ -253,7 +300,11 @@ export default function AllBlogs() {
                       }
                     >
                       <Text style={styles.readMoreText}>Read More</Text>
-                      <Feather name="external-link" size={22} color={"#fc2f2fff"} />
+                      <Feather
+                        name="external-link"
+                        size={22}
+                        color={"#fc2f2fff"}
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -264,13 +315,25 @@ export default function AllBlogs() {
             {totalPages > 1 && (
               <View style={styles.paginationContainer}>
                 {/* Previous Button */}
-                <TouchableOpacity 
-                  style={[styles.pageButton, currentPage === 1 && styles.disabledButton]}
+                <TouchableOpacity
+                  style={[
+                    styles.pageButton,
+                    currentPage === 1 && styles.disabledButton,
+                  ]}
                   onPress={prevPage}
                   disabled={currentPage === 1}
                 >
-                  <Feather name="chevron-left" size={20} color={currentPage === 1 ? "#94a3b8" : "#091b38"} />
-                  <Text style={[styles.pageButtonText, currentPage === 1 && styles.disabledButtonText]}>
+                  <Feather
+                    name="chevron-left"
+                    size={20}
+                    color={currentPage === 1 ? "#94a3b8" : "#091b38"}
+                  />
+                  <Text
+                    style={[
+                      styles.pageButtonText,
+                      currentPage === 1 && styles.disabledButtonText,
+                    ]}
+                  >
                     Prev
                   </Text>
                 </TouchableOpacity>
@@ -294,10 +357,19 @@ export default function AllBlogs() {
                     return (
                       <TouchableOpacity
                         key={pageNumber}
-                        style={[styles.pageNumber, currentPage === pageNumber && styles.activePageNumber]}
+                        style={[
+                          styles.pageNumber,
+                          currentPage === pageNumber && styles.activePageNumber,
+                        ]}
                         onPress={() => paginate(pageNumber)}
                       >
-                        <Text style={[styles.pageNumberText, currentPage === pageNumber && styles.activePageNumberText]}>
+                        <Text
+                          style={[
+                            styles.pageNumberText,
+                            currentPage === pageNumber &&
+                              styles.activePageNumberText,
+                          ]}
+                        >
                           {pageNumber}
                         </Text>
                       </TouchableOpacity>
@@ -306,15 +378,27 @@ export default function AllBlogs() {
                 </View>
 
                 {/* Next Button */}
-                <TouchableOpacity 
-                  style={[styles.pageButton, currentPage === totalPages && styles.disabledButton]}
+                <TouchableOpacity
+                  style={[
+                    styles.pageButton,
+                    currentPage === totalPages && styles.disabledButton,
+                  ]}
                   onPress={nextPage}
                   disabled={currentPage === totalPages}
                 >
-                  <Text style={[styles.pageButtonText, currentPage === totalPages && styles.disabledButtonText]}>
+                  <Text
+                    style={[
+                      styles.pageButtonText,
+                      currentPage === totalPages && styles.disabledButtonText,
+                    ]}
+                  >
                     Next
                   </Text>
-                  <Feather name="chevron-right" size={20} color={currentPage === totalPages ? "#94a3b8" : "#091b38"} />
+                  <Feather
+                    name="chevron-right"
+                    size={20}
+                    color={currentPage === totalPages ? "#94a3b8" : "#091b38"}
+                  />
                 </TouchableOpacity>
               </View>
             )}
@@ -336,6 +420,7 @@ export default function AllBlogs() {
             </Text>
           </View>
         )}
+        {currentBlogs.length > 0 && <Footer/>}
       </ScrollView>
 
       <CustomTabNavigator />

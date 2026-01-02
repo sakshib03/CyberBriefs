@@ -1,20 +1,20 @@
-import React, {useState, useEffect, useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Image,
-  FlatList,
-  ActivityIndicator,
-  Dimensions,
-  Animated,
-} from "react-native";
-import { Feather } from "@expo/vector-icons";
 import Header from "@/app/(tabs)/components/header";
-import CustomTabNavigator from "./customTabNavigator";
-import { API_BASE } from "../utils/config";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { API_BASE } from "../../utils/config";
+import CustomTabNavigator from "../customTabNavigator";
 
 const { width } = Dimensions.get("window");
 const ITEM_MARGIN = 8;
@@ -205,7 +205,7 @@ export default function Channels() {
             ]).start();
             
             router.push({
-              pathname: "/(tabs)/components/channelNews",
+              pathname: "/(tabs)/components/Channels/channelNews",
               params: { channelName: item.channel },
             });
           }}
@@ -432,6 +432,8 @@ export default function Channels() {
             <Text style={styles.emptyText}>No channels found</Text>
           </View>
         )}
+        
+        
       </View>
 
       <CustomTabNavigator />

@@ -1,19 +1,20 @@
+import Header from "@/app/(tabs)/components/header";
+import { Feather } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
+  ActivityIndicator,
   Image,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  ActivityIndicator,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useState, useEffect } from "react";
-import Header from "@/app/(tabs)/components/header";
-import CustomTabNavigator from "./customTabNavigator";
-import { router, useLocalSearchParams } from "expo-router";
-import { API_BASE } from "../utils/config";
-import { Feather } from "@expo/vector-icons";
+import { API_BASE } from "../../utils/config";
+import CustomTabNavigator from "../customTabNavigator";
+import Footer from "../footer";
 
 interface NewsItem {
   id: number;
@@ -40,13 +41,15 @@ export default function ChannelNews() {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await fetch(`${API_BASE}/news/cyber/channel/${encodeURIComponent(channelName)}`);
-      
+
+      const response = await fetch(
+        `${API_BASE}/news/cyber/channel/${encodeURIComponent(channelName)}`
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setNewsData(data);
     } catch (err) {
@@ -83,7 +86,10 @@ export default function ChannelNews() {
         <View style={styles.errorContainer}>
           <Feather name="wifi-off" size={50} color="#f93232ff" />
           <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={fetchChannelNews}>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={fetchChannelNews}
+          >
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
         </View>
@@ -116,20 +122,22 @@ export default function ChannelNews() {
                   source={{ uri: `${API_BASE}/${item.image}` }}
                   style={styles.newsImage}
                   resizeMode="cover"
-                  onError={() => console.log(`Error loading image: ${item.image}`)}
+                  onError={() =>
+                    console.log(`Error loading image: ${item.image}`)
+                  }
                 />
               )}
               <TouchableOpacity
                 onPress={() =>
                   router.push({
-                    pathname: "/(tabs)/components/newsDetails",
-                    params: { 
+                    pathname: "/(tabs)/components/Channels/newsDetails",
+                    params: {
                       newsId: item.id.toString(),
                       headline: item.headline,
                       summary: item.summary,
                       image: item.image,
-                      publishedTime: item.published_time
-                    }
+                      publishedTime: item.published_time,
+                    },
                   })
                 }
               >
@@ -148,12 +156,15 @@ export default function ChannelNews() {
           <View style={styles.emptyContainer}>
             <Feather name="file-text" size={60} color="#ccc" />
             <Text style={styles.emptyText}>
-              {searchQuery ? "No news found matching your search" : "No news available for this channel"}
+              {searchQuery
+                ? "No news found matching your search"
+                : "No news available for this channel"}
             </Text>
           </View>
         )}
+        {filteredNews.length > 0 && <Footer />}
       </ScrollView>
-
+      
       <CustomTabNavigator />
     </View>
   );

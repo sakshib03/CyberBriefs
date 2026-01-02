@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import Header from "@/app/(tabs)/components/header";
-import CustomTabNavigator from "./customTabNavigator";
+import CustomTabNavigator from "../customTabNavigator";
 import { router } from "expo-router";
-import { API_BASE } from "../utils/config";
+import { API_BASE } from "../../utils/config";
 import { Feather } from "@expo/vector-icons";
 
 export default function AllArticles() {
@@ -137,7 +137,7 @@ export default function AllArticles() {
                 style={styles.newsCard}
                 onPress={() =>
                   router.push({
-                    pathname: "/(tabs)/components/newsDetails",
+                    pathname: "/(tabs)/components/Channels/newsDetails",
                     params: {
                       newsId: item.id.toString(),
                       headline: item.headline,

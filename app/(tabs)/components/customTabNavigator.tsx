@@ -15,20 +15,20 @@ export default function CustomTabNavigator() {
     {
       name: "Channels",
       icon: "tv",
-      route: "/(tabs)/components/channels",
+      route: "/(tabs)/components/Channels/channels",
       active: pathname.includes("/channels"),
     },
     {
-      name: "Dr. Vikram Sethi Blogs",
+      name: "Blogs",
       icon: "book-open",
-      route: "/(tabs)/components/allBlogs",
+      route: "/(tabs)/components/Blogs/allBlogs",
       active: pathname.includes("/allBlogs"),
     },
     {
       name: "Y2AI Newsletter",
       icon: "tv",
-      route: "/(tabs)/components/y2aiNewsletter",
-      active: pathname.includes("/y2aiNewsletter"),
+      route: "/(tabs)/components/NewsLetter/newsLetter",
+      active: pathname.includes("/newsLetter"),
     },
   ];
 
@@ -62,13 +62,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
-    right: 20,
+    right: 0,
     flexDirection: "row",
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#eee",
     height: 80,
     paddingBottom: 10,
+    padding:10,
   },
   tabItem: {
     flex: 1,

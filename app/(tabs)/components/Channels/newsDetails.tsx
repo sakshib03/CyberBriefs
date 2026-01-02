@@ -1,19 +1,20 @@
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Image,
-  ScrollView,
-  ActivityIndicator,
-  Linking,
-} from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
 import Header from "@/app/(tabs)/components/header";
-import CustomTabNavigator from "./customTabNavigator";
+import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { API_BASE } from "../utils/config";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { API_BASE } from "../../utils/config";
+import CustomTabNavigator from "../customTabNavigator";
+import Footer from "../footer";
 
 interface NewsDetail {
   id: number;
@@ -203,6 +204,7 @@ export default function NewsDetails() {
             </View>
           </View>
         </View>
+        <Footer/>
       </ScrollView>
 
       <CustomTabNavigator />

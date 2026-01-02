@@ -11,7 +11,7 @@ export default function Header() {
     if (pathname === "/(tabs)") return "home";
     if (pathname.includes("/recentNews")) return "recentNews";
     if (pathname.includes("/channels")) return "channels";
-    if (pathname.includes("/y2aiNewsletter")) return "y2aiNewsletter";
+    if (pathname.includes("/newsLetter")) return "newsLetter";
     if (pathname.includes("/allBlogs")) return "allBlogs";
     
     return "home";
@@ -73,32 +73,6 @@ export default function Header() {
           </TouchableOpacity>
           <View style={styles.divider} />
 
-          {/* <TouchableOpacity
-            style={[
-              styles.menuItem,
-              activeItem === "recentNews" && styles.activeMenuItem,
-            ]}
-            onPress={() => {
-              router.push("/(tabs)/components/recentNews");
-              setOpenMenu(false);
-            }}
-          >
-            <Feather
-              name="tv"
-              size={20}
-              color={activeItem === "recentNews" ? "#f93232ff" : "#242424"}
-            />
-            <Text
-              style={[
-                styles.menuText,
-                activeItem === "recentNews" && styles.activeMenuText,
-              ]}
-            >
-              Recent
-            </Text>
-          </TouchableOpacity> */}
-          <View style={styles.divider} />
-
           {/* CHANNELS */}
           <TouchableOpacity
             style={[
@@ -106,7 +80,7 @@ export default function Header() {
               activeItem === "channels" && styles.activeMenuItem,
             ]}
             onPress={() => {
-              router.push("/(tabs)/components/channels");
+              router.push("/(tabs)/components/Channels/channels");
               setOpenMenu(false);
             }}
           >
@@ -130,22 +104,22 @@ export default function Header() {
           <TouchableOpacity
             style={[
               styles.menuItem,
-              activeItem === "y2aiNewsletter" && styles.activeMenuItem,
+              activeItem === "newsLetter" && styles.activeMenuItem,
             ]}
             onPress={() => {
-              router.push("/(tabs)/components/y2aiNewsletter");
+              router.push("/(tabs)/components/NewsLetter/newsLetter");
               setOpenMenu(false);
             }}
           >
             <Feather
               name="shield"
               size={20}
-              color={activeItem === "y2aiNewsletter" ? "#f93232ff" : "#242424"}
+              color={activeItem === "newsLetter" ? "#f93232ff" : "#242424"}
             />
             <Text
               style={[
                 styles.menuText,
-                activeItem === "y2aiNewsletter" && styles.activeMenuText,
+                activeItem === "newsLetter" && styles.activeMenuText,
               ]}
             >
               Y2AI Newsletter
@@ -160,7 +134,7 @@ export default function Header() {
               activeItem === "allBlogs" && styles.activeMenuItem,
             ]}
             onPress={() => {
-              router.push("/(tabs)/components/allBlogs");
+              router.push("/(tabs)/components/Blogs/allBlogs");
               setOpenMenu(false);
             }}
           >
