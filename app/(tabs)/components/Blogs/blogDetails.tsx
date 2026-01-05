@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    marginTop: 70,
+    marginTop: 60,
     paddingBottom: 80,
     paddingHorizontal: 16,
   },

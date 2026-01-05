@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 70,
     paddingBottom: 80,
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
   headerButtons: {
     flexDirection: "row",

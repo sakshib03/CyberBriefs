@@ -624,7 +624,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     marginTop: 30,
     paddingBottom: 80,
-    marginHorizontal:10
+    marginHorizontal:6
   },
   heroSection: {
     paddingHorizontal: 20,
