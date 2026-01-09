@@ -22,7 +22,7 @@ interface NewsDetail {
   headline: string;
   body: string;
   summary: string;
-  image_path: string;
+  image: string;
   published_time: string;
   article_link: string;
   fetched_at: string;
@@ -60,6 +60,7 @@ export default function NewsDetails() {
       }
       
       const data = await response.json();
+      console.log("News Detail:",data);
       setNewsDetail(data);
     } catch (err) {
       console.error("Error fetching news detail:", err);
@@ -72,7 +73,7 @@ export default function NewsDetails() {
           headline: headline || "",
           body: summary || "",
           summary: summary || "",
-          image_path: image || "",
+          image: image || "",
           published_time: publishedTime || "",
           article_link: "",
           fetched_at: ""
@@ -145,13 +146,13 @@ export default function NewsDetails() {
         </View>
 
         <View style={styles.newsCard}>
-          {newsDetail?.image_path ? (
+          {newsDetail?.image ? (
             <Image
-              source={{ uri: `${newsDetail.image_path}` }}
+              source={{ uri: `${newsDetail.image}` }}
               style={styles.newsImage}
               resizeMode="cover"
               defaultSource={require("@/assets/images/default_image.png")}
-              onError={() => console.log(`Error loading image: ${newsDetail.image_path}`)}
+              onError={() => console.log(`Error loading image: ${newsDetail.image}`)}
             />
           ) : (
             <View style={[styles.newsImage, styles.placeholderImage]}>
