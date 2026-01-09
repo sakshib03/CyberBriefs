@@ -236,7 +236,7 @@ export default function Newsletter() {
             {currentNewsletters.map((item) => (
               <View key={item.id} style={styles.newsCard}>
                 <Image
-                  source={{ uri: `${API_BASE}${item.imagePath}` }}
+                  source={{ uri: `${item.imagePath}` }}
                   style={styles.newsImage}
                   resizeMode="cover"
                   defaultSource={require("@/assets/images/img1.jpeg")}

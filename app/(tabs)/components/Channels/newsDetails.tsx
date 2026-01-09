@@ -147,9 +147,10 @@ export default function NewsDetails() {
         <View style={styles.newsCard}>
           {newsDetail?.image_path ? (
             <Image
-              source={{ uri: `${API_BASE}/${newsDetail.image_path}` }}
+              source={{ uri: `${newsDetail.image_path}` }}
               style={styles.newsImage}
               resizeMode="cover"
+              defaultSource={require("@/assets/images/default_image.png")}
               onError={() => console.log(`Error loading image: ${newsDetail.image_path}`)}
             />
           ) : (

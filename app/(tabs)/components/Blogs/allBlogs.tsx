@@ -213,10 +213,10 @@ export default function AllBlogs() {
             {currentBlogs.map((item) => (
               <View key={item.id} style={styles.newsCard}>
                 <Image
-                  source={{ uri: `${API_BASE}${item.imagePath}` }}
+                  source={{ uri: `${item.imagePath}` }}
                   style={styles.newsImage}
                   resizeMode="cover"
-                  defaultSource={require("@/assets/images/img1.jpeg")}
+                  defaultSource={require("@/assets/images/default_image.png")}
                   onError={(e) => {
                     console.log("Image load error:", e.nativeEvent.error);
                   }}

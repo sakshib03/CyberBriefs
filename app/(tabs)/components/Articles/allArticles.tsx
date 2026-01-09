@@ -151,9 +151,10 @@ export default function AllArticles() {
               >
                 {item.image && (
                   <Image
-                    source={{ uri: `${API_BASE}/${item.image}` }}
+                    source={{ uri: `${item.image}` }}
                     style={styles.newsImage}
                     resizeMode="cover"
+                    defaultSource={require("@/assets/images/default_image.png")}
                     onError={() => console.log(`Error loading image: ${item.image}`)}
                   />
                 )}

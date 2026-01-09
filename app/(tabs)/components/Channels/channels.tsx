@@ -212,9 +212,10 @@ export default function Channels() {
         >
           {item.image ? (
             <Image
-              source={{ uri: `${API_BASE}/${item.image}` }}
+              source={{ uri: `${item.image}` }}
               style={styles.channelLogo}
               resizeMode="cover"
+              defaultSource={require("@/assets/images/default_image.png")}
               onError={() => console.log(`Error loading image: ${item.image}`)}
             />
           ) : (

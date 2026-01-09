@@ -23,11 +23,15 @@ export default function Header() {
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        {/* <View style={{ padding: 8 }}>
-          <TouchableOpacity onPress={() => setOpenMenu(!openMenu)}>
+        <View style={{ padding: 8 }}>
+          {/* <TouchableOpacity onPress={() => setOpenMenu(!openMenu)}>
             <Feather name="menu" size={26} color="#242424" />
-          </TouchableOpacity>
-        </View> */}
+          </TouchableOpacity> */}
+          <Image 
+          source={require("../../../assets/images/logo.png")}
+          style={{padding:10}}
+          />
+        </View>
         <View style={styles.subHeader}>
           <Image
             source={require("../../../assets/images/logo2.png")}

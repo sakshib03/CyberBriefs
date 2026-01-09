@@ -6,16 +6,13 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
-  Dimensions,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useState, useEffect, useRef } from "react";
 import Header from "@/app/(tabs)/components/header";
 import CustomTabNavigator from "./components/customTabNavigator";
 import { router } from "expo-router";
-import RenderHTML from "react-native-render-html";
 import { API_BASE } from "./utils/config";
-import * as Linking from "expo-linking";
 import Footer from "./components/footer";
 
 export default function HomeScreen() {
@@ -47,17 +44,6 @@ export default function HomeScreen() {
       }
     };
   }, []);
-
-  const darkWebNews = [
-    {
-      id: 1,
-      title: "Data Breach Discovered at integliatech.com",
-      summary:
-        "Integlia Tech (formerly known as Integlia Technology Solutions Private Limited) is a private, unlisted software development company based in Pune, Maharashtra, India.",
-      details:
-        "BrotherHood Threat Actor Identified | Discovered: 10-15-2025 | Country: India",
-    },
-  ];
 
   const getDaysAgo = (publishedTime) => {
     const publishedDate = new Date(publishedTime);
@@ -108,11 +94,13 @@ export default function HomeScreen() {
         published_time: item.published_time,
       }));
 
+      console.log("Articles:",mappedArticles);
       setPopularArticles(mappedArticles);
     } catch (error) {
       console.error("Error fetching popular articles:", error);
     }
   };
+  
 
   const fetchHeadline=async()=>{
     try{
@@ -363,9 +351,10 @@ export default function HomeScreen() {
               >
                 <View style={styles.articleImageContainer}>
                   <Image
-                    source={{ uri: `${API_BASE}/${item.image}` }}
+                    source={{ uri: `${item.image}` }}
                     style={styles.articleImage}
                     resizeMode="cover"
+                    defaultSource={require("@/assets/images/default_image.png")}
                   />
                   <View style={styles.categoryTag}>
                     <Text style={styles.categoryText}>{item.channel}</Text>
@@ -407,10 +396,10 @@ export default function HomeScreen() {
               {blogPosts.slice(0,2).map((item) => (
                 <View key={item.id} style={styles.blogCard}>
                   <Image
-                    source={{ uri: `${API_BASE}${item.imagePath}` }}
+                    source={{ uri: `${item.imagePath}` }}
                     style={styles.blogImage}
                     resizeMode="cover"
-                    defaultSource={require("@/assets/images/img1.jpeg")}
+                    defaultSource={require("@/assets/images/default_image.png")}
                   />
                   <View style={styles.blogContent}>
                     <TouchableOpacity
