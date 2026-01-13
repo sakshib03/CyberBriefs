@@ -253,6 +253,8 @@ export default function NewsLetterDetails() {
       .replace(/<br\s*\/?>/gi, "<br/>")
       .replace(/\r\n/g, "\n");
 
+    processed = processed.replace(/src="\/([^"]+)"/g, `src="${API_BASE}/$1"`);
+
     processed = processed.replace(/<colgroup>[\s\S]*?<\/colgroup>/g, "");
 
     processed = processed.replace(/style="[^"]*"/g, "");
@@ -411,7 +413,6 @@ export default function NewsLetterDetails() {
                       fontFamily: systemFonts.join(","),
                     },
                   }}
-            
                   listsPrefixesRenderers={{
                     ul: () => (
                       <Text

@@ -79,7 +79,7 @@ export default function BlogDetails() {
         readTime: getReadTime(data.body),
         originalLink: data.original_link,
       };
-
+      console.log("Blog:", mappedBlog);
       setBlogData(mappedBlog);
     } catch (err) {
       console.error("Error fetching blog details:", err);
@@ -251,6 +251,8 @@ export default function BlogDetails() {
       .replace(/&#39;/g, "'")
       .replace(/<br\s*\/?>/gi, "<br/>")
       .replace(/\r\n/g, "\n");
+
+    processed = processed.replace(/src="\/([^"]+)"/g, `src="${API_BASE}/$1"`);
 
     processed = processed.replace(/<colgroup>[\s\S]*?<\/colgroup>/g, "");
 

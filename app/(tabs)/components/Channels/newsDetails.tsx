@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   },
   newsTitle: {
     fontWeight: "900",
-    fontSize: 32,
+    fontSize: 28,
     marginBottom: 20,
     color: "#0f172a",
     lineHeight: 40,
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
   },
   summaryContainer: {
     marginBottom: 32,
-    padding: 20,
+    padding: 16,
     backgroundColor: "#f8fafc",
     borderRadius: 18,
     borderWidth: 1,
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     marginBottom: 32,
-    padding: 20,
+    padding: 16,
     backgroundColor: "#f8fafc",
     borderRadius: 18,
     borderWidth: 1,
