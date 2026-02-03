@@ -147,7 +147,7 @@ export default function BlogDetails() {
       fontFamily: systemFonts.join(","),
     },
     p: {
-      fontSize: 18,
+      fontSize: 14,
       color: "#475569",
       lineHeight: 28,
       marginBottom: 16,
@@ -177,7 +177,7 @@ export default function BlogDetails() {
       paddingLeft: 20,
     },
     li: {
-      fontSize: 18,
+      fontSize: 16,
       color: "#475569",
       lineHeight: 28,
       marginBottom: 8,
@@ -474,9 +474,9 @@ const styles = StyleSheet.create({
   newsCard: {
     marginBottom: 28,
     backgroundColor: "#fff",
-    borderRadius: 24,
+    borderRadius: 12,
     overflow: "hidden",
-    padding: 16,
+    padding: 14,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   newsImage: {
     width: "100%",
     height: 220,
-    borderRadius: 18,
+    borderRadius: 14,
     marginBottom: 20,
     borderWidth: 2,
     borderColor: "#e2e8f0",
@@ -585,7 +585,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 20,
-    fontSize: 18,
+    fontSize: 14,
     color: "#64748b",
     fontWeight: "600",
     letterSpacing: 0.5,

@@ -302,7 +302,7 @@ export default function AllBlogs() {
                       <Text style={styles.readMoreText}>Read More</Text>
                       <Feather
                         name="external-link"
-                        size={22}
+                        size={20}
                         color={"#fc2f2fff"}
                       />
                     </TouchableOpacity>
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8fafc",
   },
   searchContainer: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 22,
     paddingVertical: 10,
     backgroundColor: "#fff",
     marginTop: 40,
@@ -450,9 +450,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#e2e8f0",
     borderRadius: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    fontSize: 17,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    fontSize: 14,
     backgroundColor: "#fff",
     color: "#334155",
     fontWeight: "500",
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     borderColor: "#e2e8f0",
   },
   resultsText: {
-    fontSize: 15,
+    fontSize: 14,
     color: "#475569",
     fontWeight: "600",
     textAlign: "center",
@@ -481,12 +481,10 @@ const styles = StyleSheet.create({
   title: {
     color: "#f93232",
     fontWeight: "800",
-    fontSize: 22,
+    fontSize: 20,
     paddingHorizontal: 16,
     paddingVertical: 14,
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e2e8f0",
     letterSpacing: -0.5,
     textShadowColor: "rgba(249, 50, 50, 0.15)",
     textShadowOffset: { width: 0, height: 2 },
@@ -496,14 +494,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 10,
     paddingBottom: 80,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   newsCard: {
     marginBottom: 28,
     backgroundColor: "#fff",
     borderRadius: 20,
     overflow: "hidden",
-    padding: 18,
+    padding: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
@@ -527,10 +525,9 @@ const styles = StyleSheet.create({
   },
   newsTitle: {
     fontWeight: "800",
-    fontSize: 24,
+    fontSize: 20,
     color: "#0f172a",
-    lineHeight: 34,
-    letterSpacing: -0.4,
+    lineHeight: 30,
     marginBottom: 12,
   },
   metaInfo: {
@@ -555,7 +552,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   newsSummary: {
-    fontSize: 17,
+    fontSize: 14,
     color: "#475569",
     marginTop: 8,
     lineHeight: 26,
@@ -587,7 +584,7 @@ const styles = StyleSheet.create({
   },
   readMoreText: {
     color: "#fc2f2fff",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
   },
   paginationContainer: {
@@ -603,7 +600,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 10,
     backgroundColor: "#fff",
     borderRadius: 12,
     borderWidth: 2,
@@ -677,7 +674,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 20,
-    fontSize: 18,
+    fontSize: 14,
     color: "#64748b",
     fontWeight: "600",
     letterSpacing: 0.5,
@@ -692,7 +689,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     marginTop: 24,
-    fontSize: 17,
+    fontSize: 14,
     color: "#475569",
     textAlign: "center",
     lineHeight: 26,
@@ -700,10 +697,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   retryButton: {
-    marginTop: 32,
+    marginTop: 28,
     backgroundColor: "#f93232",
     paddingHorizontal: 32,
-    paddingVertical: 16,
+    paddingVertical: 10,
     borderRadius: 14,
     shadowColor: "#f93232",
     shadowOffset: { width: 0, height: 8 },

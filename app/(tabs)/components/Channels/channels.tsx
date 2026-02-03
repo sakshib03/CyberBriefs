@@ -17,8 +17,8 @@ import { API_BASE } from "../../utils/config";
 import CustomTabNavigator from "../customTabNavigator";
 
 const { width } = Dimensions.get("window");
-const ITEM_MARGIN = 8;
-const ITEM_WIDTH = (width - ITEM_MARGIN * 3) / 2;
+const ITEM_MARGIN = 16;
+const ITEM_WIDTH = (width - ITEM_MARGIN * 4) / 2;
 
 export default function Channels() {
   const [channels, setChannels] = useState([]);
@@ -455,10 +455,9 @@ const styles = StyleSheet.create({
   title: {
     color: "#f93232ff",
     fontWeight: "600",
-    fontSize: 20,
+    fontSize: 18,
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
@@ -481,8 +480,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   channelLogo: {
-    width: 110,
-    height: 110,
+    width: 100,
+    height: 100,
     borderRadius: 55,
     backgroundColor: "#fff",
     borderWidth: 3,
@@ -510,7 +509,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   channelName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
     color: "#091b38ff",
     marginBottom: 6,
@@ -525,7 +524,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    fontSize: 16,
+    fontSize: 14,
     color: "#666",
   },
   errorContainer: {

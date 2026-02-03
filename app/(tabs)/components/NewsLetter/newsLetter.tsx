@@ -316,7 +316,7 @@ export default function Newsletter() {
                     <Text style={styles.readMoreText}>Read Newsletter</Text>
                     <Feather
                       name="external-link"
-                      size={22}
+                      size={20}
                       color={"#fc2f2fff"}
                     />
                   </TouchableOpacity>
@@ -443,10 +443,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8fafc",
   },
   searchContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingHorizontal: 22,
+    paddingVertical: 8,
+    marginTop: 40,
     backgroundColor: "#fff",
-    marginTop: 50,
     borderBottomWidth: 1,
     borderBottomColor: "#e2e8f0",
     shadowColor: "#000",
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 20,
     paddingVertical: 16,
-    fontSize: 17,
+    fontSize: 14,
     backgroundColor: "#fff",
     color: "#334155",
     fontWeight: "500",
@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
     borderColor: "#e2e8f0",
   },
   resultsText: {
-    fontSize: 15,
+    fontSize: 14,
     color: "#475569",
     fontWeight: "600",
     textAlign: "center",
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#f93232",
     fontWeight: "800",
-    fontSize: 24,
+    fontSize: 22,
     paddingHorizontal: 16,
     paddingVertical: 14,
     backgroundColor: "#fff",
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     overflow: "hidden",
-    padding: 20,
+    padding: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
   newsImage: {
     width: "100%",
     height: 220,
-    borderRadius: 18,
+    borderRadius: 14,
     marginBottom: 20,
     borderWidth: 2,
     borderColor: "#e2e8f0",
@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
   },
   newsTitle: {
     fontWeight: "800",
-    fontSize: 24,
+    fontSize: 22,
     color: "#0f172a",
     lineHeight: 34,
     letterSpacing: -0.4,
@@ -561,14 +561,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   metaText: {
-    fontSize: 13,
+    fontSize: 12,
     color: "#64748b",
     fontWeight: "600",
   },
   newsSummary: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#475569",
-    marginTop: 8,
+    marginTop: 4,
     lineHeight: 24,
     fontWeight: "500",
     letterSpacing: -0.1,
@@ -597,10 +597,6 @@ const styles = StyleSheet.create({
     padding: 8,
     gap: 6,
     alignItems: "center",
-    backgroundColor: "#f8fafc",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
   },
   readMoreText: {
     color: "#fc2f2fff",
@@ -636,7 +632,7 @@ const styles = StyleSheet.create({
     borderColor: "#f1f5f9",
   },
   pageButtonText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
     color: "#091b38",
   },
@@ -662,7 +658,7 @@ const styles = StyleSheet.create({
     borderColor: "#f93232",
   },
   pageNumberText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
     color: "#091b38",
   },
@@ -694,7 +690,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 20,
-    fontSize: 18,
+    fontSize: 14,
     color: "#64748b",
     fontWeight: "600",
     letterSpacing: 0.5,

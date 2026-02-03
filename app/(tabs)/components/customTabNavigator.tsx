@@ -42,7 +42,7 @@ export default function CustomTabNavigator() {
         >
           <Feather
             name={tab.icon}
-            size={24}
+            size={22}
             color={tab.active ? "#23467eff" : "gray"}
           />
           <Text

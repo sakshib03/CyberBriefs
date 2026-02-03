@@ -539,7 +539,7 @@ export default function HomeScreen() {
                         pathname:
                           "/(tabs)/components/NewsLetter/newsLetterDetails",
                         params: {
-                          newsletter_id: item.id.toString(),
+                          id: item.id.toString(),
                           title: item.title,
                           body: item.fullBody,
                           publishedTime: item.publishedTime,
@@ -570,7 +570,7 @@ export default function HomeScreen() {
                         pathname:
                           "/(tabs)/components/NewsLetter/newsLetterDetails",
                         params: {
-                          newsletter_id: item.id.toString(),
+                          id: item.id.toString(),
                           title: item.title,
                           body: item.fullBody,
                           publishedTime: item.publishedTime,
@@ -613,11 +613,11 @@ const styles = StyleSheet.create({
   contentContainer: {
     marginTop: 30,
     paddingBottom: 80,
-    marginHorizontal:6
+    marginHorizontal:4
   },
   heroSection: {
     paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingVertical: 22,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#e9ecef",
@@ -626,10 +626,9 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "700",
     color: "#091b38",
-    marginBottom: 6,
   },
   heroSubtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#666",
     fontWeight: "400",
   },
@@ -753,7 +752,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "700",
     color: "#091b38",
     marginBottom: 4,
@@ -778,7 +777,7 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
   },
   articleCard: {
-    width: 180,
+    width: 162,
     marginRight: 16,
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -866,12 +865,12 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   metaTextSmall: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#14122cff",
     fontWeight: 500,
   },
   blogSummary: {
-    fontSize: 15,
+    fontSize: 14,
     color: "#444",
     lineHeight: 22,
     marginBottom: 12,

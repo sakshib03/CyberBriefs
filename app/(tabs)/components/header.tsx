@@ -23,13 +23,13 @@ export default function Header() {
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        <View style={{ padding: 8 }}>
+        <View style={{ padding: 2 }}>
           {/* <TouchableOpacity onPress={() => setOpenMenu(!openMenu)}>
             <Feather name="menu" size={26} color="#242424" />
           </TouchableOpacity> */}
           <Image 
           source={require("../../../assets/images/logo.png")}
-          style={{padding:10}}
+          style={{padding:10, width:35, height:40}}
           />
         </View>
         <View style={styles.subHeader}>
@@ -168,7 +168,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#070707ff",
     position: "relative",
     zIndex:1000,
-
   },
 
   header: {
@@ -193,8 +192,8 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    width: 150,
-    height: 60,
+    width: 120,
+    height: 50,
     resizeMode: "contain",
   },
 

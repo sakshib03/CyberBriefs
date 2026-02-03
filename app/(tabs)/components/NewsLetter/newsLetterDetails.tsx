@@ -147,7 +147,7 @@ export default function NewsLetterDetails() {
       fontFamily: systemFonts.join(","),
     },
     p: {
-      fontSize: 18,
+      fontSize: 14,
       color: "#475569",
       lineHeight: 28,
       marginBottom: 16,
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   newsCard: {
     marginBottom: 28,
     backgroundColor: "#fff",
-    borderRadius: 24,
+    borderRadius: 12,
     overflow: "hidden",
     padding: 16,
     shadowColor: "#000",
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
   newsImage: {
     width: "100%",
     height: 220,
-    borderRadius: 18,
+    borderRadius: 16,
     marginBottom: 20,
     borderWidth: 2,
     borderColor: "#e2e8f0",
@@ -608,7 +608,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 20,
-    fontSize: 18,
+    fontSize: 14,
     color: "#64748b",
     fontWeight: "600",
     letterSpacing: 0.5,
